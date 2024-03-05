@@ -1,8 +1,12 @@
 from django.urls import path
-from main.views import index,about
+from main.views import index,about,detailPost
 
 urlpatterns = [
 	path('', index, name='home'),
-	path('about/', about, name='konaba')
+
+	path('post-detail/',detailPost,name='detailPost'),
+	
+	path('about-me/',about,name='konaba'),
+
 	
 ]

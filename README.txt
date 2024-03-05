@@ -40,6 +40,39 @@ komandu atu kria file migrasaun:
 komandu atu orienta base de dados hodi kria tabela tuir file migrasaun nebe kria ona
     python manage.py migrate
 
+aula 2
+# muda default template django nian, troka ho ita nia template rasik
+1. kria app ho naran "main"
+    python manage.py startapp main
+2. rejista app main iha settings.py iha parte INSTALLED_APPS 
+    "main",
+
+3. kria file ho naran "urls.py" iha app main nia laran no kria lista url no bolu views naran "index"
+
+    from django.urls import path
+    from main.views import index
+
+    urlpatterns = [
+        path('', index, name='home'),
+        
+    ]
+
+4. kria view naran "index" iha file views.py iha app main nia laran
+    def index(request):
+	    return render(request,'index.html')
+
+5. tamba ita render template "index.html" entaun ita presija kria file tempate refere
+    - iha app main nia laran, kria folder naran "templates"
+    - kria file naran "index.html" iha folder templates nebe ita kria
+    - iha file "index.html" nia laran koko kria codigu html simples hodi haree iha pajina web
+6. urls.py nebe ita kria iha app main nia laran, ita mos presija rejista iha ita nia main url
+nebe lokaliza iha app konfigurasaun nian iha file urls.py! iha kazu ida ne'e. file urls.py iha blog nia laran.
+    - inklui funsaun "include"
+        from django.urls import path,include  
+    - resjita urls foun husi app main
+        path("",include('main.urls')),
+    keta haluha atu aumenta virgula "," iha lista url sira.
+
 
 aula 3
 # load static files in django project
