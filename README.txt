@@ -100,10 +100,106 @@ aula 3
     - no extend file index ba file base
         {% extends 'base.html' %}
 
+aula 4 
+Troka/muda templates tuir nesesidade
+    
+-deklara variavel no valor hodi mostra iha template
+    -Deklara object ho naran context no tau informasaun sira iha object nia laran no bolu iha return
+
+    def index(request):
+        context = {
+            'title':"Home Page",
+        }
+        return render(request,'index.html',context)
+
+    -Halo maeira hanesan ba view seluk nafatin ho key mak title maibe valor diferente tuir pajina ida-idak
+    
+    def about(request):
+        context = {
+            'title':"Kona-ba Ha'u",
+        }
+        return render(request,'about.html',context)
+
+-oinsa mostra informasaun ne'e haruku husi view ba iha template
+    -key nebe deklara naran title nune'e iha file html ita sei bolu nia ho maneira
+        {{title}}
+
+    ezemplu :
+
+             <title>Portfolio - {{title}}</title>
+
+            - tau iha parte head husi html ou iha parte seluk template nian
+
+aula 5
+
+Kria Model ka tabela Database
+exemplu model ba rai dadus Portfolio ho kampu sira mak henesan (titulu,deskrisaun no imajen).
+jeralmente django sei kria id nudar primary key automatika ba model karik ita la kria manual.
+
+class Portfolio(models.Model):
+	titulu = models.CharField(max_length=50)
+	deskrisaun = models.CharField(max_length=225)
+	imajen = models.ImageField(upload_to='portfolio',null=True,blank=True)
+
+	def __str__(self):
+		template = '{0.titulu}'
+		return template.format(self)
+
+hafoin kria Model ita mos sei ba rejista iha file admin.py hodi hamosu iha admin panel.
+presija import model portfolio
+    from main.models import Portfolio
+tuir mai rejista
+    admin.site.register(Portfolio)
+
+-library nebe suporta hodi uza ImageField mak narna Pillow. nunee ita presija intalla ho maneira
+    python -m pip install Pillow
+
+hafoin kria model iha ita nia projetu ita presija run komandu tuir mai ne'e:
+    python manage.py makemigrations     : atu kria file migrations
+    no
+    python manage.py migrate            : atu komunika ho database hodi kria tabela tuir model nebe kria iha project
 
 
+-konfigura file imajen nebe upload / media file
+    settings.py 
+        MEDIA_ROOT = BASE_DIR / 'media'
+        MEDIA_URL = '/media/'
+    urls.py 
+        from django.conf import settings
+        from django.conf.urls.static import static
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+karik ita kria susesu ona ita nia Model. Ita bele ona koko halo querysets.
 
+maneira atu halimar querysets iha terminal :
+    python manage.py shell
 
+hafoin tama tiha ba shell, molok ita atu halimar querysets ita presija import models ne'ebe atu koko querysets.
+exemplu portfolio
+    from main.models import Portfolio
 
+querysets sira mak hanesan:
 
+    Select :
+        data = Portfolio.objects.all()      : atu fo sai dados hotu hotu iha tabela Portfolio
+        data = Portfolio.objects.get(id=1)  : atu fo sai dados Portfolio ho ID '1'. queryset ida ne'e sei retorna dados ida deit.
+        data = Portfolio.objects.filter(titulu='Web') : sei fo sai dados Portfolio sira ne'ebe ho titulu 'Web'
+        data = Portfolio.objects.filter(titulu__icontains='Web') : sei fo sai dados Portfolio sira ne'ebe iha titulu eziste liafuan 'Web'
+
+    Create:
+        portfolio_instance = Portfolio.objects.create(titulu='django framework',deskrisaun='deskrisaun')
+        aneksa file imajen
+        >>> dir_imajen = 'C:/Users/Lobato Pereira/blog/static/images/bg8.jpg'
+        >>> with open(dir_imajen, 'rb') as f:
+        ...     portfolio_instance.imajen.save('bg8.jpg',f)
+        ...
+        >>> portfolio_instance.save()
+
+    Update:
+        portfolio_instance = Portfolio.objects.get(pk=1) 
+        portfolio_instance.titulu = 'Updated Titulu'
+        portfolio_instance.save()
+
+    Delete
+        portfolio_instance = Portfolio.objects.get(pk=1) 
+        portfolio_instance.delete()
