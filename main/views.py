@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from main.models import Portfolio,Project
 
 # Create your views here.
 
@@ -18,9 +19,11 @@ def about(request):
 	return render(request,'about.html',context)
 
 def portfolio(request):
+	dados_portfolio = Portfolio.objects.all()
 	context = {
 		'title':"Porfolio",
 		'portfolio_active':"active",
+		'dados':dados_portfolio,
 	}
 	return render(request,'portfolio.html',context)
 

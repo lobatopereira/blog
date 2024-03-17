@@ -1,6 +1,6 @@
 Repositorio ida ne'e uza ba Kursu Django iha FDLS.
 
-Atualizasaun sira iha Repositorio ida ne'e sei bazeia ba Aula nebe la'o.
+Atualizasaun sira iha Repositorio ida ne'e sei bazeia ba ========================== AULA nebe la'o.==========================
 
 Atu install python, bele download aplikasaun Python iha https://www.python.org/downloads/
 
@@ -40,7 +40,8 @@ komandu atu kria file migrasaun:
 komandu atu orienta base de dados hodi kria tabela tuir file migrasaun nebe kria ona
     python manage.py migrate
 
-aula 2
+========================== AULA 2 ==========================
+
 # muda default template django nian, troka ho ita nia template rasik
 1. kria app ho naran "main"
     python manage.py startapp main
@@ -74,7 +75,8 @@ nebe lokaliza iha app konfigurasaun nian iha file urls.py! iha kazu ida ne'e. fi
     keta haluha atu aumenta virgula "," iha lista url sira.
 
 
-aula 3
+========================== AULA 3 ==========================
+
 # load static files in django project
 
 1. foti template nebe ita hakarak
@@ -100,7 +102,8 @@ aula 3
     - no extend file index ba file base
         {% extends 'base.html' %}
 
-aula 4 
+========================== AULA 4 ==========================
+
 Troka/muda templates tuir nesesidade
     
 -deklara variavel no valor hodi mostra iha template
@@ -130,9 +133,11 @@ Troka/muda templates tuir nesesidade
 
             - tau iha parte head husi html ou iha parte seluk template nian
 
-aula 5
 
-Kria Model ka tabela Database
+========================== AULA 5 ==========================
+
+Kria Model ka tabela Database.
+* Model ida iha Projetu Django reprezenta tabela ida iha Database.
 exemplu model ba rai dadus Portfolio ho kampu sira mak henesan (titulu,deskrisaun no imajen).
 jeralmente django sei kria id nudar primary key automatika ba model karik ita la kria manual.
 
@@ -203,3 +208,159 @@ querysets sira mak hanesan:
     Delete
         portfolio_instance = Portfolio.objects.get(pk=1) 
         portfolio_instance.delete()
+
+
+
+========================== AULA 6 ==========================
+Relational Model
+iha Aula ida ne'e, ita kria Model Categoria no Project nebe sei iha relasaun ho Model Portfolio.
+
+#Model Categoria 
+class Categoria(models.Model):
+    naran = models.CharField(max_length=30)
+    
+    def __str__(self):
+        template = '{0.naran}'
+        return template.format(self) 
+
+#Model Project
+class Project(models.Model):
+    portfolio = models.OneToOneField(Portfolio,on_delete=models.CASCADE,related_name='portfolio')
+    cat = models.ForeignKey(Categoria,on_delete=models.CASCADE)
+    naran = models.CharField(max_length=100)
+    data_hahu = models.DateField()
+    data_remata = models.DateField()
+    status = models.CharField(choices=[('Inisiu','Inisiu'),('Prosesu Hela','Prosesu Hela'),('Finalizadu','Finalizadu')],max_length=20,default='Inisiu')
+
+
+    def __str__(self):
+        template = '{0.naran} | {0.status}'
+        return template.format(self)
+
+Iha Model Project mak ita iha relasaun ho Model Categoria no Portfolio.
+relasaun ho Portfolio ho tipo One to One nunee deklara (OneToOneField):
+    portfolio = models.OneToOneField(Portfolio,on_delete=models.CASCADE,related_name='portfolio')
+
+relasaun ho categoria ho tipo One to Many nunee deklara (ForeignKey):
+    cat = models.ForeignKey(Categoria,on_delete=models.CASCADE)
+    
+
+Ita mos aumenta tan field status no enderesu_url iha Model Portfolio nune'e ita nia model Portfolio sai hanesan:
+
+class Portfolio(models.Model):
+    titulu = models.CharField(max_length=50)
+    deskrisaun = models.CharField(max_length=225)
+    imajen = models.ImageField(upload_to='portfolio',null=True,blank=True)
+    status = models.BooleanField(default=False)
+    enderesu_url = models.CharField(max_length=100,null=True,blank=True)
+
+    def __str__(self):
+        template = '{0.titulu}'
+        return template.format(self)
+
+Hafoin Kria Model rua no aumenta field iha Model Portfolio. Signifika ita halo mudansa ba Model nune'e ita presija halo migrasaun ba Database nune'e bele atualiza mudansa sira ne'e ba iha Database. Ho komanda :
+    python manage.py makemigrations
+    
+    python manage.py migrate
+
+Atu Model rua ne'ebe foun (Categoria no Project) mos mosu iha Admin Panel ita presija rejista liu husi file admin.py
+Import uluk lai Model rua refere
+    from main.models import Portfolio,Categoria,Project
+
+tuir mai Rejista Model
+    admin.site.register(Categoria)
+    admin.site.register(Project)
+
+
+Karik hotu ona ba Database. Tuir mai ita bele kontinua ho Queryset.
+Loke fali Shell.
+    python manage.py shell
+
+Oinsa kria dadus categoria foun liu husi shell
+primeiru tenki import Model sira ne'ebe iha ho maneira:
+    from main.models import Portfolio,Categoria,Project
+
+tuir mai queryset hodi kria categoria foun:
+    dados_categoria = Categoria.objects.create(naran='Web Application')
+tuir check dados_categoria hodi haree katak dados kria ona ka seidauk (bele mos hare liu husi admin panel)
+    dados_categoria  
+
+========================== AULA 7 ==========================
+Kontinuasaun Aula 6 no Oinsa load dadus husi database ba iha template (Uza Queryset)
+Oinsa Kria ka insere dadus foun ida iha Model Project, presija tau atensaun tamba Model refere iha ForeignKey.
+
+Loke fali Shell
+    python manage.py shell
+
+Import Model sira ne'ebe atu uza iha shell
+    from main.models import Portfolio,Categoria,Project
+
+bainhira ita kria dadus foun iha Model Project ho maneira deklara direta ID portfolio no ID categoria hanesan iha kraik ne'e:
+
+    dados_project = Project.objects.create(portfolio=5,cat=1,naran="Clinic Apointment System",data_hahu='2024-03-16',data_remata='2024-05-30',status='Finalizadu')
+
+bainhira executa Queryset refere, sei mosu erro katak field rua portfolio no cat tenki instance husi Model Portfolio no Categoria.
+
+Nune'e atu insere dadus foun iha Model Project ita tenki foti uluk lai dadus Portfolio no Categoria uza queryset get().
+
+Ba Categoria:
+    dados_cat = Categoria.objects.get(id=1)
+
+Ba Portfolio:
+    dados_portfolio = Portfolio.objects.get(id=5)
+
+Karik ita iha ona dadus rua refere, tuir mai ita bele koko hodi hadia queryset hodi kria dadus Project.
+    
+    dados_project = Project.objects.create(portfolio=dados_portfolio,cat=dados_cat,naran="Clinic Apointment System",data_hahu='2024-03-16',data_remata='2024-05-30',status='Finalizadu')
+
+karik mak mosu erro presija check fali queryset halo didiak.
+bainhira susesu mak ita bele check dados nebe ita kria (ou bele check husi admin panel).
+    dados_project 
+
+Tuir Oinsa load dadus husi database ba iha template (Uza Queryset)
+Exemplu ne'ebe ita sei halo mak, ita sei foti dadus Portfolio hodi ba mostra iha pajina Portfolio nian.
+
+atu foti dadus Portfolio ita presija ba halo queryset iha view portfolio nian.
+
+loke file view.py
+no halo queryset iha view portfolio nian ho maneira all()
+Portfolio.objects.all()
+
+nune'e ita nia view ba portfolio nian sai hanesan tuir mai:
+
+def portfolio(request):
+    dados_portfolio = Portfolio.objects.all() #all() signifika foti dadus hotu-hotu
+    context = {
+        'title':"Porfolio",
+        'portfolio_active':"active",
+        'dados':dados_portfolio,
+    }
+    return render(request,'portfolio.html',context)
+
+Hafoin ita foti dadus Portfolio no tau hamutuk ona iha render template, tuir mai ita bele ona bolu iha template html portfolio nian.
+Loke file html portfolio nian
+tamba dadus Portfolio nebe ita query, mai ho tipo Lista ka dadus barak (multiple data), atu mostra ita tenki looping dadus refere.
+
+{% for data in dados %}
+    <div class="col-md-4 col-sm-6">
+         <div class="team-thumb">
+              <div class="team-image">
+                   {% if data.imajen %}<!-- kondisaun atu check karik imajen iha mak mostra selae mostra imajen default husi file static -->
+                   <img src="{{data.imajen.url}}" class="img-responsive" alt="">
+                   {% else %}
+                   <img src="{% static 'images/author-image1.jpg' %}" class="img-responsive" alt="">
+                   {% endif %}
+              </div>
+              <div class="team-info">
+                   <h3>{{data.titulu}} </h3>
+                   <span>{{data.deskrisaun}}</span>
+              </div>
+         </div>
+    </div>
+{% endfor %}
+
+iha parte ida ne'e bele hare tuir iha file portfolio nia laran hodi haree kodigu html kompletu
+
+
+
+
