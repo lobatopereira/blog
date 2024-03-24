@@ -362,5 +362,67 @@ tamba dadus Portfolio nebe ita query, mai ho tipo Lista ka dadus barak (multiple
 iha parte ida ne'e bele hare tuir iha file portfolio nia laran hodi haree kodigu html kompletu
 
 
+========================== AULA 8 ==========================
+Kria Custom Admin Page hodi jere dadus.
+
+pip install django-crispy-forms
+pip install crispy-bootstrap4
+
+kria pajina index Admin nian.
+    kria url:
+        path('administrador/',IndexAdmin,name='IndexAdmin'),
+    kria views:
+        from django.contrib.auth.decorators import login_required
+        @login_required #funsaun atu limita uzuariu atu asesu view ida ne'e karik tenki Login.
+        def IndexAdmin(request):
+            return render(request,'adminpage/index.html')
+
+kria pajina login
+    kria url:
+        path('login/', loginPage, name='login'),
+    kria view:
+        from django.contrib import messages
+        from django.contrib.auth import authenticate,login,logout
+        def loginPage(request):
+            if request.method == 'POST':
+                username = request.POST.get('username')
+                password = request.POST.get('password')
+
+                user = authenticate(request,username=username,password=password)
+
+                if user is not None:
+                    login(request,user)
+                    return redirect('IndexAdmin')
+                else:
+                    messages.error(request,'Username ou Password la loos! Favor Prense fali!')
+            context = {
+                "title":"Pajina Login",
+            }
+            return render(request,'auth/login.html',context)
+kria funsaun logout
+    kria url:
+        path('logout/', logoutPage, name='logout'),
+    kria view:
+        @login_required
+        def logoutPage(request):
+            logout(request)
+            return render(request,'auth/logout.html')
+
+
+file sira nebe uza iha materia ida ne'e
+    -kopia file html sira iha app main no folder templates (auth no adminpage)
+    -kopia static file ba pajina admin nian ho naran "main" iha folder static
+
+konfigurasaun nebe halo iha aula ida ne'e:
+iha file setting.py:
+aumenta
+LOGIN_REDIRECT_URL = 'IndexAdmin'
+LOGIN_URL = 'login'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+no aumenta 
+'crispy_forms',
+'crispy_bootstrap4',
+iha INSTALLED_APPS
 
 

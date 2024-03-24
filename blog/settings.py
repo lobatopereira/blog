@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    'crispy_forms',
+    'crispy_bootstrap4',
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "main",
@@ -112,6 +114,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+LOGIN_REDIRECT_URL = 'IndexAdmin'
+LOGIN_URL = 'login'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

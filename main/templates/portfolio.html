@@ -12,25 +12,31 @@
 
                     <div class="col-md-12 col-sm-12">
                          <div class="section-title">
-                              <h2><small>Find My Complated Project with Django</small></h2>
+                              <h2><small>Find My Completed Project with Django</small></h2>
                          </div>
                     </div>
 
 
                     {% for data in dados %}
                     <div class="col-md-4 col-sm-6">
-                         <div class="team-thumb">
-                              <div class="team-image">
-                                   {% if data.imajen %}<!-- kondisaun atu check karik imajen iha mak mostra selae mostra imajen default husi file static -->
-                                   <img src="{{data.imajen.url}}" class="img-responsive" alt="">
-                                   {% else %}
-                                   <img src="{% static 'images/author-image1.jpg' %}" class="img-responsive" alt="">
-                                   {% endif %}
+                         <div class="team-thumb" style="position: relative; box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);margin-top: 10px; border-radius: 10px;">
+                              <div class="team-image" style="height: 200px; overflow: hidden;">
+                                  {% if data.imajen %}
+                                      <img src="{{ data.imajen.url }}" style="width: 100%; height: auto;" alt="">
+                                  {% else %}
+                                      <img src="{% static 'images/author-image1.jpg' %}" class="img-responsive" alt="">
+                                  {% endif %}
                               </div>
+
                               <div class="team-info">
                                    <h3>{{data.titulu}} </h3>
-                                   <span>{{data.deskrisaun}}</span>
+                                   <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ data.deskrisaun }}</span>s
                               </div>
+                              {% if data.project.cat %}
+                              <div class="bg-primary" style="position: absolute; top: 0; left: 0;padding: 5px">
+                                   {{ data.project.cat.naran }}
+                              </div>
+                              {%endif%}
                          </div>
                     </div>
                     {% endfor %}
