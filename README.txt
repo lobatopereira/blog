@@ -416,7 +416,6 @@ file sira nebe uza iha materia ida ne'e
 konfigurasaun nebe halo iha aula ida ne'e:
 iha file setting.py:
 aumenta
-LOGIN_REDIRECT_URL = 'IndexAdmin'
 LOGIN_URL = 'login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -425,4 +424,152 @@ no aumenta
 'crispy_bootstrap4',
 iha INSTALLED_APPS
 
+========================== AULA 9 no 10 ==========================
+1. Kontinuasaun Funsionalidade Login no Logout
+
+2. Lee ka kria funsaun Read data Portfolio
+    -Kria url ba lee dadus portfolio:
+        path('admin-portfolio/', AdminPortfolio, name='admin-portfolio'),
+    -Kria view hodi lee dadus Portfolio
+        @login_required
+        def AdminPortfolio(request):
+            objects = Portfolio.objects.all()
+            context = {
+                'objects':objects
+            }
+            return render(request,'adminpage/portfolio.html',context)
+    -kria template naran portfolio.html iha folder adminpage nia laran no lee ka hamosu dadus portfolio iha tabela:
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th>Imajen</th>
+                <th>Titulu</th>
+                <th>Deskrisaun</th>
+                <th>#</th>
+            </tr>
+            {% for data in objects %} 
+            <tr>
+                <td>{% if data.imajen %}<img src="{{data.imajen.url}}" width="50px" height="50px">{%endif%}</td>
+                <td>{{data.titulu}}</td>
+                <td>{{data.deskrisaun}}</td>
+                <td>
+                    <a href="" class="btn btn-sm btn-outline-success my-4"><i class="fa fa-edit"></i></a>
+
+                    <a href="" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>   
+
+3. Kria funsionalidade Create ka Insert dadus Portfolio
+    -Kria url hodi handle insert dadus portfolio:
+        path('admin-portfolio/add', AdminPortfolioAdd, name='admin-portfolio-add'),
+    -Kria file forms.py hodi generate form ba Model Portfolio:
+        from django import forms
+        from main.models import *
+            class PortfolioForm(forms.ModelForm):
+                class Meta:
+                    model = Portfolio
+                    fields = ['titulu','deskrisaun','imajen','status','enderesu_url']
+    -Kria view hodi halo funsaun insert dadus Portfolio
+        from main.forms import PortfolioForm
+        @login_required
+        def AdminPortfolioAdd(request):
+            if request.method == "POST":
+                form = PortfolioForm(request.POST, request.FILES)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request,'Dadus Portfolio Rejistadu ho Susesu!')
+                    return redirect('admin-portfolio')
+            else:
+                form = PortfolioForm()
+            context = {
+                'page':"Formulario Rejistu Portfolio",
+                'form':form,
+            }
+            return render(request,'adminpage/add_portfolio.html',context)
+    -Kria file add_portfolio.html no tau codigo html:
+        {% extends "adminpage/admin_base.html" %}
+        {% load crispy_forms_tags %}
+        {% block content %}  
+        <div class="container mt-3 p-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{page}}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Save</button>
+                    <form>
+                </div>
+            </div>
+            
+        </div>
+
+        {% endblock %}
+
+4. Kria Funsionalidade Update dadus Portfolio
+    -Kria url hodi handle update dadus portfolio:
+        path('admin-portfolio/update/<str:id>', AdminPortfolioUpdate, name='admin-portfolio-update'),
+    -Kria view hodi halo funsaun update dadus Portfolio
+        @login_required
+        def AdminPortfolioUpdate(request,id):
+            dataPortfolio = Portfolio.objects.get(id=id)
+            if request.method == "POST":
+                form = PortfolioForm(request.POST, request.FILES,instance=dataPortfolio)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request,'Dadus Portfolio Atualizadu ho Susesu!')
+                    return redirect('admin-portfolio')
+            else:
+                form = PortfolioForm(instance=dataPortfolio)
+            context = {
+                'page':"Formulario Atualiza Portfolio",
+                'form':form,
+            }
+            return render(request,'adminpage/add_portfolio.html',context)
+    - iha funsaun update ida ne'e ita sei uza nafatin template add_portfolio.html tamba konteudu sei hanesan ho template add nian.
+
+5. Kria Funsionalidade Delete dadus Portfolio
+    -Kria url hodi handle delete dadus Portfolio
+        path('admin-portfolio/delete/<str:id>', AdminPortfolioDelete, name='admin-portfolio-delete'),
+    -Kria view hodi halo funsaun delete dadus Portfolio nian
+        @login_required
+        def AdminPortfolioDelete(request,id):
+            dataPortfolio = Portfolio.objects.get(id=id)
+            dataPortfolio.delete()
+            messages.error(request,f'Dadus Portfolio {dataPortfolio.titulu} Hamoos ho Susesu!')
+            return redirect('admin-portfolio')
+    iha ne'e ita sei la uza template tanba bainhira dadus delete ona sei redirect kedas ba tabela portfolio nian.
+
+NB:
+ikus link husi create, update no delete sei uza iha template portfolio.html hanesan tuir mai ne'e:
+ <div class="card-header">
+    <a href="{% url 'admin-portfolio-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Portfolio</a>
+</div>
+<div class="card-body">
+    <table class="table table-bordered table-sm">
+        <tr>
+            <th>Imajen</th>
+            <th>Titulu</th>
+            <th>Deskrisaun</th>
+            <th>#</th>
+        </tr>
+        {% for data in objects %}
+        <tr>
+            <td>{% if data.imajen %}<img src="{{data.imajen.url}}" width="50px" height="50px">{%endif%}</td>
+            <td>{{data.titulu}}</td>
+            <td>{{data.deskrisaun}}</td>
+            <td>
+                <a href="{% url 'admin-portfolio-update' data.id %}" class="btn btn-sm btn-outline-success my-4"><i class="fa fa-edit"></i></a>
+
+                <a href="{% url 'admin-portfolio-delete' data.id %}" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>    
+</div>
+
+Ba dadus Kategoria no Project Ita boot sira bele koko tuir Ezemplu CRUD iha Model Portfolio nian.
 

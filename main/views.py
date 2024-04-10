@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
+from main.forms import PortfolioForm
+
 # Create your views here.
 
 def index(request):
@@ -94,3 +96,54 @@ def logoutPage(request):
 	logout(request)
 	return render(request,'auth/logout.html')
 
+
+@login_required
+def AdminPortfolio(request):
+	objects = Portfolio.objects.all()
+	context = {
+		'objects':objects
+	}
+	return render(request,'adminpage/portfolio.html',context)
+
+@login_required
+def AdminPortfolioAdd(request):
+	if request.method == "POST":
+		form = PortfolioForm(request.POST, request.FILES)
+		if form.is_valid():
+			form.save()
+			messages.success(request,'Dadus Portfolio Rejistadu ho Susesu!')
+			return redirect('admin-portfolio')
+	else:
+		form = PortfolioForm()
+	context = {
+		'page':"Formulario Rejistu Portfolio",
+		'form':form,
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def AdminPortfolioUpdate(request,id):
+	dataPortfolio = Portfolio.objects.get(id=id)
+	if request.method == "POST":
+		form = PortfolioForm(request.POST, request.FILES,instance=dataPortfolio)
+		if form.is_valid():
+			form.save()
+			messages.success(request,'Dadus Portfolio Atualizadu ho Susesu!')
+			return redirect('admin-portfolio')
+	else:
+		form = PortfolioForm(instance=dataPortfolio)
+	context = {
+		'page':"Formulario Atualiza Portfolio",
+		'form':form,
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def AdminPortfolioDelete(request,id):
+	dataPortfolio = Portfolio.objects.get(id=id)
+	dataPortfolio.delete()
+	messages.error(request,f'Dadus Portfolio {dataPortfolio.titulu} Hamoos ho Susesu!')
+	return redirect('admin-portfolio')
+
+
+	

@@ -17,6 +17,13 @@ urlpatterns = [
 	path('administrador/',IndexAdmin,name='IndexAdmin'),
 	path('login/', loginPage, name='login'),
     path('logout/', logoutPage, name='logout'),
+    
+    
+	path('admin-portfolio/', AdminPortfolio, name='admin-portfolio'),
+	path('admin-portfolio/add', AdminPortfolioAdd, name='admin-portfolio-add'),
+	path('admin-portfolio/update/<str:id>', AdminPortfolioUpdate, name='admin-portfolio-update'),
+	path('admin-portfolio/delete/<str:id>', AdminPortfolioDelete, name='admin-portfolio-delete'),
+
 
 
 

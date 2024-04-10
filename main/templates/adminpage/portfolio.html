@@ -1,0 +1,42 @@
+{% extends "adminpage/admin_base.html" %}
+{% block content %}  
+<div class="container mt-3 p-5">
+    <div class="card">
+    {% if messages %}
+        {% for message in messages %} 
+          <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{message}}
+          </div>
+        {% endfor %}
+    {% endif %}
+        <div class="card-header">
+            <a href="{% url 'admin-portfolio-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Portfolio</a>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-sm">
+                <tr>
+                    <th>Imajen</th>
+                    <th>Titulu</th>
+                    <th>Deskrisaun</th>
+                    <th>#</th>
+                </tr>
+                {% for data in objects %}
+                <tr>
+                    <td>{% if data.imajen %}<img src="{{data.imajen.url}}" width="50px" height="50px">{%endif%}</td>
+                    <td>{{data.titulu}}</td>
+                    <td>{{data.deskrisaun}}</td>
+                    <td>
+                        <a href="{% url 'admin-portfolio-update' data.id %}" class="btn btn-sm btn-outline-success my-4"><i class="fa fa-edit"></i></a>
+
+                        <a href="{% url 'admin-portfolio-delete' data.id %}" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>    
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}
