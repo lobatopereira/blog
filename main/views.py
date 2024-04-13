@@ -1,11 +1,11 @@
-from django.shortcuts import render,redirect
-from main.models import Portfolio,Project
+from django.shortcuts import render,redirect,get_object_or_404
+from main.models import *
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
-from main.forms import PortfolioForm
+from main.forms import PortfolioForm,ProjectForm,CategoriaForm
 
 # Create your views here.
 
@@ -101,7 +101,8 @@ def logoutPage(request):
 def AdminPortfolio(request):
 	objects = Portfolio.objects.all()
 	context = {
-		'objects':objects
+		'objects':objects,
+		'title':"Lista Portfolio",
 	}
 	return render(request,'adminpage/portfolio.html',context)
 
@@ -116,8 +117,9 @@ def AdminPortfolioAdd(request):
 	else:
 		form = PortfolioForm()
 	context = {
-		'page':"Formulario Rejistu Portfolio",
+		'title':"Formulario Rejistu Portfolio",
 		'form':form,
+		'page':"form_portfolio",
 	}
 	return render(request,'adminpage/add_portfolio.html',context)
 
@@ -133,7 +135,7 @@ def AdminPortfolioUpdate(request,id):
 	else:
 		form = PortfolioForm(instance=dataPortfolio)
 	context = {
-		'page':"Formulario Atualiza Portfolio",
+		'title':"Formulario Atualiza Portfolio",
 		'form':form,
 	}
 	return render(request,'adminpage/add_portfolio.html',context)
@@ -145,5 +147,106 @@ def AdminPortfolioDelete(request,id):
 	messages.error(request,f'Dadus Portfolio {dataPortfolio.titulu} Hamoos ho Susesu!')
 	return redirect('admin-portfolio')
 
+@login_required
+def AdminProject(request):
+	objects = Project.objects.all()
+	context = {
+		'objects':objects,
+		'title':"Lista Projetu",
+		'page':"lista_projetu",
+	}
+	return render(request,'adminpage/project.html',context)
 
+@login_required
+def AdminProjectAdd(request):
+	if request.method == "POST":
+		form = ProjectForm(request.POST)
+		if form.is_valid():
+			form.save()
+			messages.success(request,'Dadus Projetu Rejistadu ho Susesu!')
+			return redirect('admin-project')
+	else:
+		form = ProjectForm()
+	context = {
+		'title':"Formulario Rejistu Projetu",
+		'form':form,
+		'page':"form_project",
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+	
+@login_required
+def AdminProjectUpdate(request,pk):
+	objects = get_object_or_404(Project,id=pk)
+	if request.method == "POST":
+		form = ProjectForm(request.POST,instance=objects)
+		if form.is_valid():
+			form.save()
+			messages.success(request,'Dadus Projetu Atualizadu ho Susesu!')
+			return redirect('admin-project')
+	else:
+		form = ProjectForm(instance=objects)
+	context = {
+		'title':"Formulario Atualiza Projetu",
+		'form':form,
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def AdminProjectDelete(request,id):
+	objects = get_object_or_404(Project,id=id)
+	objects.delete()
+	messages.error(request,f'Dados Projetu hamoos ona ho susesu!')
+	return redirect('admin-project')
+	
+@login_required
+def AdminCategoria(request):
+	objects = Categoria.objects.all()
+	context = {
+		'objects':objects,
+		'title':"Lista Kategoria",
+		'page':"lista_kategoria",
+	}
+	return render(request,'adminpage/categoria.html',context)
+
+@login_required
+def AdminCategoriaAdd(request):
+	if request.method == "POST":
+		form = CategoriaForm(request.POST)
+		if form.is_valid():
+			form.save()
+			messages.success(request,'Dadus Projetu Rejistadu ho Susesu!')
+			return redirect('admin-categoria')
+	else:
+		form = CategoriaForm()
+	context = {
+		'title':"Formulario Rejistu Kategoria",
+		'form':form,
+		'page':"form_categoria",
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+	
+@login_required
+def AdminCategoriaUpdate(request,pk):
+	objects = get_object_or_404(Categoria,id=pk)
+	if request.method == "POST":
+		form = CategoriaForm(request.POST,instance=objects)
+		if form.is_valid():
+			form.save()
+			messages.success(request,'Dadus Kategoria Atualizadu ho Susesu!')
+			return redirect('admin-categoria')
+	else:
+		form = CategoriaForm(instance=objects)
+	context = {
+		'title':"Formulario Atualiza Kategoria",
+		'form':form,
+		'page':'form_categoria',
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def AdminCategoriaDelete(request,id):
+	objects = get_object_or_404(Categoria,id=id)
+	objects.delete()
+	messages.error(request,f'Dados Kategoria hamoos ona ho susesu!')
+	return redirect('admin-categoria')
 	

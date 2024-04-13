@@ -16,4 +16,9 @@ class ProjectForm(forms.ModelForm):
 	data_remata = forms.DateField(label='Data Remata', widget=DateInput())
 	class Meta:
 		model = Project
-		fields = ['portfolio','cat','naran','data_hahu','data_remata','status']
+		fields = ['cat','naran','data_hahu','data_remata','status']
+
+class CategoriaForm(forms.ModelForm):
+	class Meta:
+		model = Categoria
+		fields = ['naran']

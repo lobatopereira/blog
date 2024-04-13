@@ -18,27 +18,36 @@
         {% endfor %}
     {% endif %}
         <div class="card-header">
-            <a href="{% url 'admin-portfolio-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Portfolio</a>
+            <a href="{% url 'admin-categoria-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Kategoria</a>
         </div>
         <div class="card-body">
             <table class="table table-bordered table-sm">
                 <tr>
-                    <th>Imajen</th>
-                    <th>Titulu</th>
-                    <th>Deskrisaun</th>
+                    <th>Kategoria</th>
                     <th>#</th>
                 </tr>
                 {% for data in objects %}
                 <tr>
-                    <td>{% if data.imajen %}<img src="{{data.imajen.url}}" width="50px" height="50px">{%endif%}</td>
-                    <td>{{data.titulu}}</td>
-                    <td>{{data.deskrisaun}}</td>
+                    <td>{{data.naran}}</td>
                     <td>
-                        <a href="{% url 'admin-portfolio-update' data.id %}" class="btn btn-sm btn-outline-success my-4"><i class="fa fa-edit"></i></a>
+                        <a href="{% url 'admin-categoria-update' data.id %}" class="btn btn-sm btn-outline-success my-4"><i class="fa fa-edit"></i></a>
 
-                        <a href="{% url 'admin-portfolio-delete' data.id %}" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
+                        <a href="#" data-toggle="modal" data-target="#delete-{{ data.id }}" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
+                <div class="modal fade" id="delete-{{ data.id}}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-body">
+                          Ita Boot hakarak hamoos dadus Kategoria ho naran {{data.naran}}?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                          <a href="{% url 'admin-categoria-delete' data.id %}" class="btn btn-info">Yes</a>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 {% endfor %}
             </table>    
         </div>

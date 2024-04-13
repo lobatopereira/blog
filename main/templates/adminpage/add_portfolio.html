@@ -2,9 +2,22 @@
 {% load crispy_forms_tags %}
 {% block content %}  
 <div class="container mt-3 p-5">
+    <header> 
+        <ol class="breadcrumb mb-1 mt-1">
+          <li class="breadcrumb-item"><a href="{% url 'IndexAdmin' %}">Home</a></li>
+          {% if page == 'form_project' %}
+          <li class="breadcrumb-item"><a href="{% url 'admin-project' %}">Lista Projetu</a></li>
+          {% elif page == 'form_categoria' %}
+          <li class="breadcrumb-item"><a href="{% url 'admin-categoria' %}">Lista Kategoria</a></li>
+          {% elif page == 'form_portfolio' %}
+          <li class="breadcrumb-item"><a href="{% url 'admin-portfolio' %}">Lista Portfolio</a></li>
+          {%endif%}
+          <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+        </ol>
+    </header>
     <div class="card">
         <div class="card-header">
-            <h3>{{page}}</h3>
+            <h3>{{title}}</h3>
         </div>
         <div class="card-body">
         	<form method="post" enctype="multipart/form-data">

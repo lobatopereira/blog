@@ -573,3 +573,42 @@ ikus link husi create, update no delete sei uza iha template portfolio.html hane
 
 Ba dadus Kategoria no Project Ita boot sira bele koko tuir Ezemplu CRUD iha Model Portfolio nian.
 
+========================== AULA 11 ==========================
+Kontinuasaun CRUD : Model Project no Aumenta Funsionalidade Konfirmasaun molok Delete Dadus.
+
+1. CRUD Model Project :
+    - Read Dados husi Model Project
+        urls.py : path('admin-project/', AdminProject, name='admin-project'),
+        views.py : kria view naran AdminProject
+        kria template ho naran : project.html iha folder adminpage
+    - Create ka insert Dados ba Model Project
+        urls.py : path('admin-project/add', AdminProjectAdd, name='admin-project-add'),
+        views.py : kria view naran AdminProjectAdd
+        kria Form iha forms.py ho naran : ProjectForm
+    - Update dados Project
+        urls.py : path('admin-project/update/<str:pk>', AdminProjectUpdate, name='admin-project-update'),
+        views.py : kria views ho naran AdminProjectUpdate
+    - Delete dados Project
+        urls.py : path('admin-project/delete/<str:id>', AdminProjectDelete, name='admin-project-delete'),
+        views.py : kria views ho naran :AdminProjectDelete
+
+2. Funsionalidade Konfirmasaun ba Delete dadus
+    Iha butaun delete nian bainhira click sei mosu modal:
+        <a href="#" data-toggle="modal" data-target="#delete-{{ data.id }}" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
+    Modal nebe atu mosu:
+        <div class="modal fade" id="delete-{{ data.id}}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  Ita Boot hakarak hamoos dadus Projetu ho naran {{data.naran}}?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                  <a href="{% url 'admin-project-delete' data.id %}" class="btn btn-info">Yes</a>
+                </div>
+              </div>
+            </div>
+        </div>
+        binhira user click iha konfirmasaun ka butaun yes mak sei ezekuta funsaun delete dadus.
+
+Iha aula ida ne'e mos funsionalide CRUD ba Model Categoria Aumenta ona bele check iha kodigu.

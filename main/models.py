@@ -22,7 +22,7 @@ class Categoria(models.Model):
 		return template.format(self)	
 
 class Project(models.Model):
-	portfolio = models.OneToOneField(Portfolio,on_delete=models.CASCADE,related_name='project')
+	portfolio = models.OneToOneField(Portfolio,on_delete=models.CASCADE,related_name='project',null=True,blank=True)
 	cat = models.ForeignKey(Categoria,on_delete=models.CASCADE)
 	naran = models.CharField(max_length=100)
 	data_hahu = models.DateField()
