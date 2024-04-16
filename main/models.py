@@ -34,7 +34,23 @@ class Project(models.Model):
 		template = '{0.naran} | {0.status}'
 		return template.format(self)
 
+from django.contrib.auth.models import User
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    publication_date = models.DateTimeField(auto_now_add=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    category = models.ManyToManyField(Categoria)
+    status_choices = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('scheduled', 'Scheduled'),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default='draft')
 
+    def __str__(self):
+        return self.title
 
 # Kliete
 # Periodu

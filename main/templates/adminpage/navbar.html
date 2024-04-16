@@ -13,6 +13,8 @@
 				{% include 'adminpage/superadmin_navbar.html' %}
 			{% elif user.groups.all.0.name == 'admin' %}
 				{% include 'adminpage/admin_navbar.html' %}
+			{% else %}
+				{% include 'adminpage/admin_navbar.html' %}
 			{% endif %}
 		{% endif %}
 	</nav>

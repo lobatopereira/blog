@@ -612,3 +612,77 @@ Kontinuasaun CRUD : Model Project no Aumenta Funsionalidade Konfirmasaun molok D
         binhira user click iha konfirmasaun ka butaun yes mak sei ezekuta funsaun delete dadus.
 
 Iha aula ida ne'e mos funsionalide CRUD ba Model Categoria Aumenta ona bele check iha kodigu.
+
+========================== AULA 12 ==========================
+Konekta django project ba Database (Mysql no Postgresql)
+1. muda database default django nian (db.sqlite3) ba fali database MySQL no PostgreSQL
+    settings.py
+    # instalasaun library nebe apoio koneksaun no konfigurasaun database MySQL:
+        pip install mysqlclient
+        DATABASES = {  
+            'default': {  
+                'ENGINE': 'django.db.backends.mysql',  
+                'NAME': 'db_blog',  
+                'USER': 'root',  
+                'PASSWORD': '',  
+                'HOST': '127.0.0.1', 
+                'PORT': '3306',  
+                'OPTIONS': {  
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
+                }  
+            }  
+        }
+
+    # instalasaun library nebe apoio koneksaun database PostreSQL:
+        pip install psycopg2
+        DATABASES = {
+            'default': {
+               'ENGINE': 'django.db.backends.postgresql',
+               'NAME': 'db_blog',
+               'USER': 'postgres',
+               'PASSWORD': 'password', #tau password
+               'HOST': 'localhost',
+               'PORT': '5432',
+               'OPTIONS': {
+                    'options': '-c search_path=db_blog',
+                },
+            }
+        }
+    # husi parte database MySQL ka PostgreSQL ita tenki kria Database nebe ita atu konekta ba, exemplu: "db_blog".
+    # hafoin konfigura database, presija migrate fali ba database foun nebe ita konfigura ona.
+    python manage.py migrate
+
+2. Kria Model Post
+
+from django.contrib.auth.models import User
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    publication_date = models.DateTimeField(auto_now_add=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    category = models.ManyToManyField(Categoria)
+    status_choices = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('scheduled', 'Scheduled'),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default='draft')
+
+    def __str__(self):
+        return self.title
+
+3. Organiza Estrutura Kodigu Django (Views no urls) 
+    Views :
+        kria folder views no separa views public nian ba file foun naran public_views.py no     administrador nian ba admin_views.py
+    No rejistu fali file rua (public_view no admin_views) iha file foun naran __init__.py
+        from .admin_views import *
+        from .public_views import *
+        from main.views1 import *
+    Urls iha app blog nia laran:
+        path("",include('main.urls_public')),
+        path("administrador/",include('main.urls')),
+    kria urls_public.py hodi rai url sira public nian
+    no urls ba administrador nian manten nafatin ho urls.py
+
+Iha aula ida ne mos atualiza ona CRUD ba Model Blog nian (check codigo tuir commit aula 12).

@@ -76,12 +76,47 @@ WSGI_APPLICATION = "blog.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+# mysql connection
+# pip install mysql-connector-python
+# pip install mysqlclient
+# DATABASES = {  
+#     'default': {  
+#         'ENGINE': 'django.db.backends.mysql',  
+#         'NAME': 'db_blog',  
+#         'USER': 'root',  
+#         'PASSWORD': '',  
+#         'HOST': '127.0.0.1', 
+#         'PORT': '3306',  
+#         'OPTIONS': {  
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
+#         }  
+#     }  
+# }  
+
+# pgsql connection
+# pip install psycopg2
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'db_blog',
+       'USER': 'postgres',
+       'PASSWORD': 'lobatopgadmin',
+       'HOST': 'localhost',
+       'PORT': '5432',
+       'OPTIONS': {
+            'options': '-c search_path=db_blog',
+        },
+   }
 }
+
+
 
 
 # Password validation

@@ -1,20 +1,11 @@
 from django.urls import path
 from main.views import *
 
-urlpatterns = [
-	path('', index, name='home'),
 
-	path('post-detail/',detailPost,name='detailPost'),
-	
-	path('about-me/',about,name='konaba'),
-	path('portfolio/',portfolio,name='portfolio'),
-	path('posts/',posts,name='posts'),
-	path('partnership/',partnership,name='partnership'),
-	path('gallery/',gallery,name='gallery'),
-	path('contact/',contact,name='contact'),
+urlpatterns = [
 
 	# admin
-	path('administrador/',IndexAdmin,name='IndexAdmin'),
+	path('',IndexAdmin,name='IndexAdmin'),
 	path('login/', loginPage, name='login'),
     path('logout/', logoutPage, name='logout'),
     
@@ -35,5 +26,13 @@ urlpatterns = [
 	path('admin-categoria/delete/<str:id>', AdminCategoriaDelete, name='admin-categoria-delete'),
 
 
+	path('admin-post/', AdminPost, name='admin-post'),
+	path('admin-post/add', AdminPostAdd, name='admin-post-add'),
+	path('admin-post/update/<str:pk>', AdminPostUpdate, name='admin-post-update'),
+	path('admin-post/delete/<str:pk>', AdminPostDelete, name='admin-post-delete'),
+
+	path('admin-post/load-post-update-form', AdminPostLoadUpdateForm, name='load-post-update-form'),
+
+	# path('create_post/', create_post, name='create_post'),
 	
 ]

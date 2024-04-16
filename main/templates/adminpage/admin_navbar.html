@@ -1,9 +1,9 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item {{active_entrevistador}}"><a class="nav-link" href="{% url 'IndexAdmin' %}"><i class="fa fa-list"></i> BLOG </a></li>
+        <li class="nav-item {{active_entrevistador}}"><a class="nav-link" href="{% url 'admin-post' %}"><i class="fa fa-list"></i> POST </a></li>
         <li class="nav-item {{active_sobrevivente}} dropdown">
-          <a class="nav-link dropdown-toggle {{active_programa}}" href="#" id="programa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list"></i> PORTFOLIO</a>
+          <a class="nav-link dropdown-toggle {{active_post}}" href="#" id="programa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list"></i> PORTFOLIO</a>
           <div class="dropdown-menu" aria-labelledby="programa">
             <a class="dropdown-item" href="{% url 'admin-portfolio' %}"><i class="fa fa-list"></i> PORTFOLIO</a>
             <a class="dropdown-item" href="{% url 'admin-project' %}"><i class="fa fa-list"></i> PROJECT</a>

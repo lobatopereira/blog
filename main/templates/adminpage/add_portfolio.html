@@ -11,6 +11,8 @@
           <li class="breadcrumb-item"><a href="{% url 'admin-categoria' %}">Lista Kategoria</a></li>
           {% elif page == 'form_portfolio' %}
           <li class="breadcrumb-item"><a href="{% url 'admin-portfolio' %}">Lista Portfolio</a></li>
+          {% elif page == 'form_post' %}
+          <li class="breadcrumb-item"><a href="{% url 'admin-post' %}">Lista Posts</a></li>
           {%endif%}
           <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
         </ol>

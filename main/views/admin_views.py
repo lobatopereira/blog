@@ -5,69 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
-from main.forms import PortfolioForm,ProjectForm,CategoriaForm
-
-# Create your views here.
-
-def index(request):
-	context = {
-		'title':"Home Page",
-		'home_active':"active",
-	}
-
-	return render(request,'index.html',context)
-
-def about(request):
-	context = {
-		'title':"Kona-ba Ha'u",
-		'about_active':"active",
-	}
-	return render(request,'about.html',context)
-
-@login_required
-def portfolio(request):
-	dados_portfolio = Portfolio.objects.all()
-	context = {
-		'title':"Porfolio",
-		'portfolio_active':"active",
-		'dados':dados_portfolio,
-	}
-	return render(request,'portfolio.html',context)
-
-def posts(request):
-	context = {
-		'title':"Posts",
-		'posts_active':"active",
-	}
-	return render(request,'posts.html',context)
-
-def partnership(request):
-	context = {
-		'title':"Partnership",
-		'partnership_active':"active",
-	}
-	return render(request,'partnership.html',context)
-
-def gallery(request):
-	context = {
-		'title':"gallery",
-		'gallery_active':"active",
-	}
-	return render(request,'gallery.html',context)
-
-def contact(request):
-	context = {
-		'title':"contact",
-		'contact_active':"active",
-	}
-	return render(request,'contact.html',context)
-
-def detailPost(request):
-	context = {
-		'title':"Post Detail",
-		'posts_active':"active",
-	}
-	return render(request,'postDetail.html',context)
+from main.forms import *
 
 @login_required
 def IndexAdmin(request):
@@ -250,3 +188,72 @@ def AdminCategoriaDelete(request,id):
 	messages.error(request,f'Dados Kategoria hamoos ona ho susesu!')
 	return redirect('admin-categoria')
 	
+@login_required
+def AdminPost(request):
+	objects = Post.objects.all()
+	context = {
+		'objects':objects,
+		'title':"Lista Publikasaun",
+		'page':"lista_post",
+	}
+	return render(request,'adminpage/posts.html',context)
+
+@login_required
+def AdminPostAdd(request):
+	if request.method == "POST":
+		form = PostForm(request.POST)
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.author = request.user
+			post.save()
+			form.save_m2m()
+			messages.success(request,'Dadus Post Rejistadu ho Susesu!')
+			return redirect('admin-post')
+	else:
+		form = PostForm()
+	context = {
+		'title':"Formulario Rejistu Publikasaun",
+		'form':form,
+		'page':"form_post",
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def AdminPostUpdate(request,pk):
+	objects = get_object_or_404(Post,id=pk)
+	if request.method == "POST":
+		form = PostForm(request.POST,instance=objects)
+		if form.is_valid():
+			post = form.save(commit=False)
+			# post.author = request.user
+			post.save()
+			form.save_m2m()
+			messages.success(request,'Dadus Post Atualizadu ho Susesu!')
+			return redirect('admin-post')
+	else:
+		form = PostForm(instance=objects)
+	context = {
+		'title':"Formulario Atualiza Publikasaun",
+		'form':form,
+		'page':"form_post",
+	}
+	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def AdminPostDelete(request,pk):
+	objects = get_object_or_404(Post,id=pk)
+	objects.delete()
+	messages.error(request,f'Dados Publikasaun {objects.title} hamoos ona ho susesu!')
+	return redirect('admin-post')
+
+@login_required
+def AdminPostLoadUpdateForm(request):
+	if request.method == 'GET':
+		object_id = request.GET.get('objectID')
+		objects = get_object_or_404(Post,id=object_id)
+		form = PostForm(instance=objects)
+	context = {
+		'form':form,
+		'objects':objects,
+	}
+	return render(request,'adminpage/posts_load_form.html',context)
