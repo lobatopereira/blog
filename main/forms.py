@@ -1,4 +1,5 @@
 from django import forms
+from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 from main.models import *
 
@@ -24,10 +25,14 @@ class CategoriaForm(forms.ModelForm):
 		fields = ['naran']
 
 class PostForm(forms.ModelForm):
+	content = forms.CharField(label="Konteudu", required=False, widget=SummernoteWidget(attrs={'summernote': {'width': '100%', 'height': '500px'}}))
 	category = forms.ModelMultipleChoiceField(queryset=Categoria.objects.all(), widget=forms.CheckboxSelectMultiple)
 	class Meta:
 		model = Post
 		fields = ['title', 'content', 'category', 'status']  # Specify the fields you want in your form
-	def __init__(self, *args, **kwargs):
-		super(PostForm, self).__init__(*args, **kwargs)
-		self.fields['category'].queryset = Categoria.objects.all()  # Populate the category field with all categories
+		labels = {
+			'title':"Titulu"
+		}
+	# def __init__(self, *args, **kwargs):
+	# 	super(PostForm, self).__init__(*args, **kwargs)
+	# 	self.fields['category'].queryset = Categoria.objects.all()  # Populate the category field with all categories

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_summernote",
     "main",
 ]
 

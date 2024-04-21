@@ -654,23 +654,23 @@ Konekta django project ba Database (Mysql no Postgresql)
 
 2. Kria Model Post
 
-from django.contrib.auth.models import User
-class Post(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    publication_date = models.DateTimeField(auto_now_add=True)
-    last_updated_date = models.DateTimeField(auto_now=True)
-    category = models.ManyToManyField(Categoria)
-    status_choices = [
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-        ('scheduled', 'Scheduled'),
-    ]
-    status = models.CharField(max_length=20, choices=status_choices, default='draft')
+    from django.contrib.auth.models import User
+    class Post(models.Model):
+        title = models.CharField(max_length=200)
+        content = models.TextField()
+        author = models.ForeignKey(User, on_delete=models.CASCADE)
+        publication_date = models.DateTimeField(auto_now_add=True)
+        last_updated_date = models.DateTimeField(auto_now=True)
+        category = models.ManyToManyField(Categoria)
+        status_choices = [
+            ('draft', 'Draft'),
+            ('published', 'Published'),
+            ('scheduled', 'Scheduled'),
+        ]
+        status = models.CharField(max_length=20, choices=status_choices, default='draft')
 
-    def __str__(self):
-        return self.title
+        def __str__(self):
+            return self.title
 
 3. Organiza Estrutura Kodigu Django (Views no urls) 
     Views :
@@ -686,3 +686,159 @@ class Post(models.Model):
     no urls ba administrador nian manten nafatin ho urls.py
 
 Iha aula ida ne mos atualiza ona CRUD ba Model Blog nian (check codigo tuir commit aula 12).
+
+
+========================== AULA 13 ==========================
+1. Review CRUD ba Model Blog nebe push iha aula 12
+    urls crud nian:
+        path('admin-post/', AdminPost, name='admin-post'),
+        path('admin-post/add', AdminPostAdd, name='admin-post-add'),
+        path('admin-post/update/<str:pk>', AdminPostUpdate, name='admin-post-update'),
+        path('admin-post/delete/<str:pk>', AdminPostDelete, name='admin-post-delete'),
+        funsionalidade update utiliza modal: 
+        path('admin-post/load-post-update-form', AdminPostLoadUpdateForm, name='load-post-update-form'),
+        funsionalidade halo asaun ba dadus post sira nebe ita hili:
+        path('perform_post_action/', perform_post_action, name='perform_post_action'),
+    views crud nian:
+        @login_required
+        def AdminPost(request):
+            objects = Post.objects.all().order_by('-id')
+            context = {
+                'objects':objects,
+                'title':"Lista Publikasaun",
+                'page':"lista_post",
+            }
+            return render(request,'adminpage/posts.html',context)
+
+        @login_required
+        def AdminPostAdd(request):
+            if request.method == "POST":
+                form = PostForm(request.POST)
+                if form.is_valid():
+                    post = form.save(commit=False)
+                    post.author = request.user
+                    Portfolio.objects.create()
+                    post.save()
+                    form.save_m2m()
+                    messages.success(request,'Dadus Post Rejistadu ho Susesu!')
+                    return redirect('admin-post')
+            else:
+                form = PostForm()
+            context = {
+                'title':"Formulario Rejistu Publikasaun",
+                'form':form,
+                'page':"form_post",
+            }
+            return render(request,'adminpage/add_portfolio.html',context)
+
+        @login_required
+        def AdminPostUpdate(request,pk):
+            objects = get_object_or_404(Post,id=pk)
+            if request.method == "POST":
+                form = PostForm(request.POST,instance=objects)
+                if form.is_valid():
+                    post = form.save(commit=False)
+                    # post.author = request.user
+                    post.save()
+                    form.save_m2m()
+                    messages.success(request,'Dadus Post Atualizadu ho Susesu!')
+                    return redirect('admin-post')
+            else:
+                form = PostForm(instance=objects)
+            context = {
+                'title':"Formulario Atualiza Publikasaun",
+                'form':form,
+                'page':"form_post",
+            }
+            return render(request,'adminpage/add_portfolio.html',context)
+
+        @login_required
+        def AdminPostDelete(request,pk):
+            objects = get_object_or_404(Post,id=pk)
+            objects.delete()
+            messages.error(request,f'Dados Publikasaun {objects.title} hamoos ona ho susesu!')
+            return redirect('admin-post')
+
+        funsionalidade update utiliza modal: 
+        @login_required
+        def AdminPostLoadUpdateForm(request):
+            if request.method == 'GET':
+                object_id = request.GET.get('objectID')
+                objects = get_object_or_404(Post,id=object_id)
+                form = PostForm(instance=objects)
+            context = {
+                'form':form,
+                'objects':objects,
+            }
+            return render(request,'adminpage/posts_load_form.html',context)
+
+        from django.http import JsonResponse
+        import json
+        funsionalidade halo asaun ba dadus post sira nebe ita hili:
+        @login_required
+        def perform_post_action(request):
+            if request.method == 'POST':
+                if request.POST.get('checkedItems') == '':
+                    messages.error(request,f'Oops! Ita boot seidauk hili dadus ruma.')
+                    return redirect('admin-post')
+                else:
+                    action_type = request.POST.get('actionType')
+                    ids = request.POST.get('checkedItems')
+                    ids = ids.split(',')
+                    if action_type == 'delete':
+                        for i in ids:
+                    data = get_object_or_404(Post,id=i)
+                    data.delete()
+                messages.success(request,f'Dados Publikasaun nebe ita boot hili, Delete ona ho susesu!')
+                return redirect('admin-post')
+            elif action_type == 'publishCheckedPost':
+                for i in ids:
+                    data = get_object_or_404(Post,id=i)
+                    data.status = 'Published'
+                    data.save()
+                messages.success(request,f'Dados Publikasaun nebe ita boot hili, publika ona ho susesu!')
+                return redirect('admin-post')
+            elif action_type == 'draftCheckedPost':
+                for i in ids:
+                    data = get_object_or_404(Post,id=i)
+                    data.status = 'Draft'
+                    data.save()
+                messages.success(request,f'Dados Publikasaun nebe ita boot hili, draft ona ho susesu!')
+                return redirect('admin-post')
+            else:
+                return JsonResponse({'error': 'Invalid action type.'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+2. Kria funsionalidade Change Password
+    urls: 
+        path('user/change/password/', UserPasswordChange.as_view(), name='user-change-password'),
+    views:
+        class based views nebe django prepara ona ba funsionalidade change password nian:
+        from django.contrib.auth.views import PasswordChangeView, PasswordResetDoneView
+        from django.urls import reverse_lazy 
+        class UserPasswordChange(PasswordChangeView):
+            template_name = 'auth/change_password.html'
+            success_url = reverse_lazy('user-change-password')
+            def get_success_url(self):
+                messages.success(self.request, 'Password was successfully changed.')
+                return super().get_success_url()
+            def get_context_data(self, **kwargs):
+                context = super().get_context_data(**kwargs)
+                return context
+    templates:
+        kria template ho naran change_password.html iha folder auth nia laran
+3. codigo atu fo sai error sira iha form karik form nebe atu kria dadus hetan erro.
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+            <div id="divmessage" class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ field.label }}: {{ error }}
+              </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    codigo ida ne'e bele tau iha kada form sira hotu.
+
+NB: ba file .html sira favor check direta iha file sira ho detallu.

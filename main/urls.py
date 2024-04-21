@@ -33,6 +33,10 @@ urlpatterns = [
 
 	path('admin-post/load-post-update-form', AdminPostLoadUpdateForm, name='load-post-update-form'),
 
-	# path('create_post/', create_post, name='create_post'),
+	path('perform_post_action/', perform_post_action, name='perform_post_action'),
+	
+	path('user/change/password/', UserPasswordChange.as_view(), name='user-change-password'),
+
+
 	
 ]
