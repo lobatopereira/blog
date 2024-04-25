@@ -37,6 +37,8 @@ urlpatterns = [
 	
 	path('user/change/password/', UserPasswordChange.as_view(), name='user-change-password'),
 
+	path('user/change-user-account/',UserChangeAccount,name='user-change-account'),
+
 
 	
 ]

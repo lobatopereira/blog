@@ -286,6 +286,8 @@ def perform_post_action(request):
 	        action_type = request.POST.get('actionType')
 	        ids = request.POST.get('checkedItems')
 	        ids = ids.split(',')
+	        print('ids:',ids)
+	        print('action_type:',action_type)
 	        if action_type == 'delete':
 	            for i in ids:
 	            	data = get_object_or_404(Post,id=i)
@@ -310,3 +312,21 @@ def perform_post_action(request):
 	            return JsonResponse({'error': 'Invalid action type.'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+@login_required
+def UserChangeAccount(request):
+	loginUser = get_object_or_404(User,id=request.user.id)
+	if request.method == "POST":
+		form = UserChangeAccountForm(request.POST,instance=loginUser)
+		if form.is_valid():
+			form.save()
+			messages.success(request,f'Ita boot nia Konta Uzuario Atualiza ho susesu!')
+			return redirect('user-change-account')
+	else:
+		form = UserChangeAccountForm(instance=loginUser)
+
+	context = {
+		'form':form,
+		'title':"Altera Konta Utilizador",
+	}
+	return render(request,'adminpage/add_portfolio.html',context)

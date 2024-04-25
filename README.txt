@@ -842,3 +842,79 @@ Iha aula ida ne mos atualiza ona CRUD ba Model Blog nian (check codigo tuir comm
     codigo ida ne'e bele tau iha kada form sira hotu.
 
 NB: ba file .html sira favor check direta iha file sira ho detallu.
+
+========================== AULA 14 ==========================
+1. Kria funsionalidade Change Username
+    form :
+
+        class UserChangeAccountForm(forms.ModelForm):
+        class Meta:
+            model = User
+            fields = ['username','email']
+
+    url :
+
+        path('user/change-user-account/',UserChangeAccount,name='user-change-account'),
+    
+    views :
+
+        @login_required
+        def UserChangeAccount(request):
+            loginUser = get_object_or_404(User,id=request.user.id)
+            if request.method == "POST":
+                form = UserChangeAccountForm(request.POST,instance=loginUser)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request,f'Ita boot nia Konta Uzuario Atualiza ho susesu!')
+                    return redirect('user-change-account')
+            else:
+                form = UserChangeAccountForm(instance=loginUser)
+
+            context = {
+                'form':form,
+                'title':"Altera Konta Utilizador",
+            }
+            return render(request,'adminpage/add_portfolio.html',context)
+
+2. Fo sai dadus post iha pajina publiku, halo queryset ba model Post iha views post nian
+
+public_views:
+
+def posts(request):
+    objects = Post.objects.filter(status="Published").all()
+    context = {
+        'title':"Posts",
+        'posts_active':"active",
+        'dados':objects,
+    }
+    return render(request,'posts.html',context)
+
+templates posts:
+
+{% for data in dados %}
+  <div class="col-md-4 col-sm-4">
+       <div class="item">
+            <div class="courses-thumb">
+                 <div class="courses-top">
+                      <div class="courses-image">
+                           <img src="{% static 'images/courses-image1.jpg' %}" class="img-responsive" alt="">
+                      </div>
+                      <div class="courses-date">
+                           <span><i class="fa fa-calendar"></i> {{data.publication_date}}</span>
+                           <!-- <span><i class="fa fa-clock-o"></i> 7 Hours</span> -->
+                      </div>
+                 </div>
+
+                 <div class="courses-detail">
+                      <h3><a href="{% url 'detailPost' %}">{{data.title}}</a></h3>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                 </div>
+
+                 
+            </div>
+       </div>
+  </div>
+{% endfor %}
+
+
+

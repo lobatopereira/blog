@@ -15,7 +15,7 @@
           <a class="nav-link dropdown-toggle" href="#" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-o"></i> {{ request.user.username|upper }}</a>
           <div class="dropdown-menu" aria-labelledby="profile">
             <a class="dropdown-item" href="{% url 'user-change-password' %}"><i class="fa fa-cog"></i> Change Password</a>
-            <a class="dropdown-item" href="{% url 'IndexAdmin' %}"><i class="fa fa-cog"></i> Change Username</a>
+            <a class="dropdown-item" href="{% url 'user-change-account' %}"><i class="fa fa-cog"></i> Change Username</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
           </div>

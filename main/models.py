@@ -43,9 +43,9 @@ class Post(models.Model):
     last_updated_date = models.DateTimeField(auto_now=True)
     category = models.ManyToManyField(Categoria)
     status_choices = [
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-        ('scheduled', 'Scheduled'),
+        ('Draft', 'Draft'),
+        ('Published', 'Published'),
+        ('Scheduled', 'Scheduled'),
     ]
     status = models.CharField(max_length=20, choices=status_choices, default='draft')
 
