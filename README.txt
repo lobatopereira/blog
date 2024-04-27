@@ -916,5 +916,124 @@ templates posts:
   </div>
 {% endfor %}
 
+========================== AULA 15 ==========================
+1. Implementasaun Django-summernote iha Post Content
+- instalasaun library django summernote:
 
+pip install django-summernote
 
+- implementa django-summernote iha settings.py, iha parte install_apps
+
+'django_summernote'
+
+- hafoin bolu django_summernote iha install_apps, ita presija halo migrate hodi kria tabela ba Attachment sira nebe sei halo iha post content (tabela hodi rai file imagen sira)
+
+python manage.py migrate
+
+- atu lee file imajen sira nebe ita upload husi content, ita presija kria url iha file urls.py (url project nian)
+
+path('summernote/', include('django_summernote.urls')),
+
+- import django-summernote iha form post nian (content) iha file forms.py
+
+from django_summernote.widgets import SummernoteWidget
+
+- autaliza form PostForm:
+
+class PostForm(forms.ModelForm):
+    content = forms.CharField(
+        label="Konteudu", 
+        required=False, 
+        widget=SummernoteWidget(
+            attrs={'summernote': {'width': '100%', 'height': '500px'}}
+        )
+    )
+    category = forms.ModelMultipleChoiceField(queryset=Categoria.objects.all(), widget=forms.CheckboxSelectMultiple)
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'category', 'status']  # Specify the fields you want in your form
+        labels = {
+            'title':"Titulu"
+        }
+
+2. Kria funnsaun hodi lee dadus content inklui halo separasaun ba imajen no testu iha content nia laran.
+-presija installa library BeautifulSoap
+pip install bs4
+
+- funsaun hodi separa testu no file imagen iha public_views.py
+
+from bs4 import BeautifulSoup
+def extract_images_from_post_content(content):
+    soup = BeautifulSoup(content, 'html.parser')
+
+    # Find all image tags in the content
+    images = soup.find_all('img')
+
+    text = soup.get_text(separator=' ')
+    text = ' '.join(text.split())
+
+    # Extract the src attribute of each image
+    image_urls = [img['src'] for img in images]
+
+    # Return the list of image URLs
+    return image_urls,text
+
+- funsaun hodi extrai total liafuan tuir nesesidade
+
+def extract_total_words(text):
+    # Split the text into words
+    words = text.split()
+
+    # Take the first 100 words
+    words10 = ' '.join(words[:10])
+    words20 = ' '.join(words[:20])
+
+    return words10,words20
+
+- oinsa uza funsaun separa imajen husi content. modifika function posts
+
+def posts(request):
+    objects = Post.objects.filter(status="Published").all()
+    post_image_urls = []
+    for post in objects:
+        image_urls,text = extract_images_from_post_content(post.content)
+        _,words20 = extract_total_words(text)
+        post_image_urls.append({
+            'id':post.id,
+            'title':post.title,
+            'image':image_urls,
+            'headline':words20,
+            'publication_date':post.publication_date,
+            })
+    print('post_image_urls:',post_image_urls)
+    context = {
+        'title':"Posts",
+        'posts_active':"active",
+        'post_image_urls':post_image_urls,
+        'dados':objects,
+    }
+    return render(request,'posts.html',context)
+
+- iha template ita sei la bolu ona dados husi objects mai bolu husi post_image_urls. nunee sei modifika ita nia codigu ba lista posts nian.
+
+{% for data in post_image_urls %}
+<div class="col-md-4 col-sm-4">
+    <div class="item">
+        <div class="courses-thumb">
+             <div class="courses-top">
+                  <div class="courses-image">
+                       <img src="{{data.image.0}}" alt="Image" height="200px">
+                  </div>
+                  <div class="courses-date">
+                       <span><i class="fa fa-calendar"></i> {{data.publication_date}}</span>
+                       <!-- <span><i class="fa fa-clock-o"></i> 7 Hours</span> -->
+                  </div>
+             </div>
+             <div class="courses-detail">
+                  <h3><a href="{% url 'detailPost' data.id %}">{{data.title}}</a></h3>
+                  <p>{{data.headline}} ...</p>
+             </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

@@ -34,7 +34,6 @@ def portfolio(request):
 
 def posts(request):
 	objects = Post.objects.filter(status="Published").all()
-
 	post_image_urls = []
 	for post in objects:
 		image_urls,text = extract_images_from_post_content(post.content)
@@ -43,7 +42,7 @@ def posts(request):
 			'id':post.id,
 			'title':post.title,
 			'image':image_urls,
-			'content_text':words20,
+			'headline':words20,
 			'publication_date':post.publication_date,
 			})
 	print('post_image_urls:',post_image_urls)
@@ -101,11 +100,7 @@ def detailPost(request,pk):
 
 from bs4 import BeautifulSoup
 
-# Assuming you have a Post model with a 'content' field containing HTML content
-from main.models import Post
-
 def extract_images_from_post_content(content):
-    # Parse the HTML content of each post
     soup = BeautifulSoup(content, 'html.parser')
 
     # Find all image tags in the content

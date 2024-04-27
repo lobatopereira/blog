@@ -21,20 +21,17 @@
                                         <div class="courses-thumb">
                                              <div class="courses-top">
                                                   <div class="courses-image">
-                                                       <img src="{{ data.image.0 }}" alt="Image" height="200px">
+                                                       <img src="{{data.image.0}}" alt="Image" height="200px">
                                                   </div>
                                                   <div class="courses-date">
                                                        <span><i class="fa fa-calendar"></i> {{data.publication_date}}</span>
                                                        <!-- <span><i class="fa fa-clock-o"></i> 7 Hours</span> -->
                                                   </div>
                                              </div>
-
                                              <div class="courses-detail">
                                                   <h3><a href="{% url 'detailPost' data.id %}">{{data.title}}</a></h3>
-                                                  <p>{{data.content_text}} ...</p>
+                                                  <p>{{data.headline}} ...</p>
                                              </div>
-
-                                             
                                         </div>
                                    </div>
                               </div>

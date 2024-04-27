@@ -1,5 +1,5 @@
 from django import forms
-from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
+from django_summernote.widgets import SummernoteWidget #, SummernoteInplaceWidget
 
 from main.models import *
 from django.contrib.auth.models import User
@@ -26,7 +26,13 @@ class CategoriaForm(forms.ModelForm):
 		fields = ['naran']
 
 class PostForm(forms.ModelForm):
-	content = forms.CharField(label="Konteudu", required=False, widget=SummernoteWidget(attrs={'summernote': {'width': '100%', 'height': '500px'}}))
+	content = forms.CharField(
+		label="Konteudu", 
+		required=False, 
+		widget=SummernoteWidget(
+			attrs={'summernote': {'width': '100%', 'height': '500px'}}
+		)
+	)
 	category = forms.ModelMultipleChoiceField(queryset=Categoria.objects.all(), widget=forms.CheckboxSelectMultiple)
 	class Meta:
 		model = Post
