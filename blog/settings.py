@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-=-ljw8_$wsq4p8^wsmci135tfety-vrndfm@!u0@u9j*o%_%gj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['auladjfdslblog.onrender.com','localhost']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -78,12 +79,12 @@ WSGI_APPLICATION = "blog.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
 # mysql connection
 # pip install mysql-connector-python
@@ -104,19 +105,19 @@ WSGI_APPLICATION = "blog.wsgi.application"
 
 # pgsql connection
 # pip install psycopg2
-DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'db_blog',
-       'USER': 'postgres',
-       'PASSWORD': 'lobatopgadmin',
-       'HOST': 'localhost',
-       'PORT': '5432',
-       'OPTIONS': {
-            'options': '-c search_path=db_blog',
-        },
-   }
-}
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'db_blog',
+#        'USER': 'postgres',
+#        'PASSWORD': 'lobatopgadmin',
+#        'HOST': 'localhost',
+#        'PORT': '5432',
+#        'OPTIONS': {
+#             'options': '-c search_path=db_blog',
+#         },
+#    }
+# }
 
 
 
