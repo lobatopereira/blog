@@ -30,6 +30,8 @@ urlpatterns = [
 	path('admin-post/add', AdminPostAdd, name='admin-post-add'),
 	path('admin-post/update/<str:pk>', AdminPostUpdate, name='admin-post-update'),
 	path('admin-post/delete/<str:pk>', AdminPostDelete, name='admin-post-delete'),
+	
+	path('post/categoria/<str:cat>/status/<str:status>/', PostCategoryStatusList, name='PostCategoryStatusList'),
 
 	path('admin-post/load-post-update-form', AdminPostLoadUpdateForm, name='load-post-update-form'),
 
@@ -39,6 +41,7 @@ urlpatterns = [
 
 	path('user/change-user-account/',UserChangeAccount,name='user-change-account'),
 
-
+	# charts
+	path('chart-categoria-post/',chartCategoriaPost,name='chartCategoriaPost'),
 	
 ]

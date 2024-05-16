@@ -6,10 +6,38 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
 from main.forms import *
+from django.db.models import Count
 
 @login_required
 def IndexAdmin(request):
-	return render(request,'adminpage/index.html')
+	totalPost = Post.objects.all().count()
+	totalPublishedPost = Post.objects.filter(status='Published').count()
+
+	sumariuPostTuirKategoria = []
+	lista_categoria = Categoria.objects.all()
+	postStatus = Post.objects.distinct().values('status').all().order_by('status')
+	print("postStatus:",postStatus)
+
+	for x in lista_categoria:
+		postStatusList = []
+		for data in postStatus:
+			postStatusCount = Post.objects.filter(status=data['status'],category=x).count()
+			postStatusList.append({'status':data['status'],'totalStatus':postStatusCount})
+
+		sumariuPostTuirKategoria.append({'categoria':x,'totalStatus':postStatusList})
+	
+	print("sumariuPostTuirKategoria:",sumariuPostTuirKategoria)
+
+	context = {
+		'title':"Pajina Dashboard",
+		'totalPost':totalPost,
+		'totalPublishedPost':totalPublishedPost,
+		
+		'postStatus':postStatus,
+		'sumariuPostTuirKategoria':sumariuPostTuirKategoria,
+
+	}
+	return render(request,'adminpage/index.html',context)
 
 
 def loginPage(request):
@@ -212,6 +240,17 @@ def AdminPost(request):
 	}
 	return render(request,'adminpage/posts.html',context)
 
+
+@login_required
+def PostCategoryStatusList(request,cat,status):
+	objects = Post.objects.filter(status=status,category__naran=cat)
+	context = {
+		'title':f"Lista Publikasaun ho kategoria {cat} no status {status}",
+		'page':"lista_post",
+		'objects':objects,
+	}
+	return render(request,'adminpage/posts.html',context)
+
 @login_required
 def AdminPostAdd(request):
 	if request.method == "POST":
@@ -330,3 +369,38 @@ def UserChangeAccount(request):
 		'title':"Altera Konta Utilizador",
 	}
 	return render(request,'adminpage/add_portfolio.html',context)
+
+@login_required
+def chartCategoriaPost(request):
+	labels = []
+	data = []
+	categoria = Categoria.objects.all()
+	for x in categoria:
+		totalPost = Post.objects.filter(category__id=x.id).count()
+		labels.append(x.naran)
+		data.append(totalPost)
+
+	return JsonResponse(data={
+		'labels':labels,
+		'data':data,
+		})
+
+# @login_required
+# def chartCategoriaPost_Project(request):
+# 	user_suku = get_object_or_404(UserSuku,user__id=request.user.id)
+# 	labels = []
+# 	data1 = []
+# 	data2 = []
+# 	aldeia = Aldeia.objects.filter(village__id=user_suku.village.id)
+# 	for x in aldeia.iterator():
+# 		totalUmakain = Umakain.objects.filter(aldeia__id=x.id).count()
+# 		totalPopulasaun = Populasaun.objects.filter(status="Moris",aldeia__id=x.id).count()
+# 		labels.append(x.name)
+# 		data1.append(totalUmakain)
+# 		data2.append(totalPopulasaun)
+
+# 	return JsonResponse(data={
+# 		'labels':labels,
+# 		'data1':data1,
+# 		'data2':data2,
+# 		})

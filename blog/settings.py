@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_summernote",
     "main",
+    "import_export",
 ]
 
 MIDDLEWARE = [

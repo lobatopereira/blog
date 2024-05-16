@@ -21,18 +21,22 @@
             <a href="{% url 'admin-categoria-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Kategoria</a>
         </div>
         <div class="card-body">
-            <table class="table table-bordered table-sm">
+            <table id="dataTable" class="table table-bordered table-sm">
+                <thead>
                 <tr>
                     <th>Kategoria</th>
                     <th>#</th>
                 </tr>
+                </thead>
+                <tbody>
+                    
                 {% for data in objects %}
                 <tr>
                     <td>{{data.naran}}</td>
                     <td>
-                        <a href="{% url 'admin-categoria-update' data.id %}" class="btn btn-sm btn-outline-success my-4"><i class="fa fa-edit"></i></a>
+                        <a href="{% url 'admin-categoria-update' data.id %}" class="btn btn-sm btn-outline-success"><i class="fa fa-edit"></i></a>
 
-                        <a href="#" data-toggle="modal" data-target="#delete-{{ data.id }}" class="btn btn-sm btn-outline-danger my-4"><i class="fa fa-trash"></i></a>
+                        <a href="#" data-toggle="modal" data-target="#delete-{{ data.id }}" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
                 <div class="modal fade" id="delete-{{ data.id}}">
@@ -49,6 +53,7 @@
                     </div>
                 </div>
                 {% endfor %}
+                </tbody>
             </table>    
         </div>
     </div>
@@ -56,3 +61,6 @@
 </div>
 
 {% endblock %}
+{% block scripts %}
+{% include 'custom_datatables.html' %}
+{% endblock %} 

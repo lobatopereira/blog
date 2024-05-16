@@ -22,68 +22,74 @@
             <a href="{% url 'admin-post-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Post</a>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="    ">
                 <form id="actionForm" method="post" action="{% url 'perform_post_action' %}">
                     {% csrf_token %}
-                <table class="table table-bordered table-sm">
-                    <tr>
-                        <th class="text-center">
-                            <input type="checkbox" onclick="checkedalldata(this);" />
-                        </th>
-                        <th>Titulu Post</th>
-                        <th>Data</th>
-                        <th>Kategoria</th>
-                        <th>Status</th>
-                        <th>#</th>
-                    </tr>
+                <table id="dataTable" class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th class="text-center">
+                                <input type="checkbox" onclick="checkedalldata(this);" />
+                            </th>
+                            <th>Titulu Post</th>
+                            <th>Data</th>
+                            <th>Kategoria</th>
+                            <th>Status</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    
                     {% for data in objects %}
-                    <tr>
-                        <td class="text-center"><input id="checkboxpostid" type="checkbox" name="postIdList" value="{{data.id}}"></td>
-                        <td>{{data.title}}</td>
-                        <td width="15%">{{data.publication_date|date:"d-M-Y"}}</td>
-                        <td>
-                            {% for i in data.category.all %}
-                                <span class="badge btn-info">{{i.naran}}</span><br>
-                            {% endfor %}
-                        </td>
-                        <td>{{data.status}}</td>
-                        <td>
-                            <div class="d-flex justify-content-between">
-                                
-                            <button id="updatePost-{{data.id}}" data-id="{{data.id}}" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#updateModal-{{ data.id }}"><i class="fa fa-edit"></i> Update ho Modal</button>
+                        <tr>
+                            <td class="text-center"><input id="checkboxpostid" type="checkbox" name="postIdList" value="{{data.id}}"></td>
+                            <td>{{data.title}}</td>
+                            <td width="15%">{{data.publication_date|date:"d-M-Y"}}</td>
+                            <td>
+                                {% for i in data.category.all %}
+                                    <span class="badge btn-info">{{i.naran}}</span><br>
+                                {% endfor %}
+                            </td>
+                            <td>{{data.status}}</td>
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    
+                                <button id="updatePost-{{data.id}}" data-id="{{data.id}}" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#updateModal-{{ data.id }}"><i class="fa fa-edit"></i> Update ho Modal</button>
 
 
-                            <a href="{% url 'admin-post-update' data.id %}" class="btn btn-sm btn-outline-success"><i class="fa fa-edit"></i></a>
+                                <a href="{% url 'admin-post-update' data.id %}" class="btn btn-sm btn-outline-success"><i class="fa fa-edit"></i></a>
 
-                            <a href="#" data-toggle="modal" data-target="#delete-{{ data.id}}" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <div class="modal fade" id="delete-{{ data.id}}">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-body">
-                              Ita Boot hakarak hamoos dadus Publikasaun ho titulu {{data.title}}?
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                              <a href="{% url 'admin-post-delete' data.id %}" class="btn btn-info">Yes</a>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                    {% include 'adminpage/updateJQuery.html' %}
-                    <div class="modal fade" id="updateModal-{{ data.id }}">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    Formulario Update Dados Publikasaun {{ data.title }}?
+                                <a href="#" data-toggle="modal" data-target="#delete-{{ data.id}}" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></a>
                                 </div>
-                                <div id="laodedForm-{{data.id}}"></div>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="delete-{{ data.id}}">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos dadus Publikasaun ho titulu {{data.title}}?
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'admin-post-delete' data.id %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
                             </div>
                         </div>
-                    </div>
+                        {% include 'adminpage/updateJQuery.html' %}
+                        <div class="modal fade" id="updateModal-{{ data.id }}">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        Formulario Update Dados Publikasaun {{ data.title }}?
+                                    </div>
+                                    <div id="laodedForm-{{data.id}}"></div>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
+                    </tbody>
                 </table>
                     <div class="d-flex justify-content-between mb-3">
                         <div class="d-flex justify-content-between">                                
@@ -149,4 +155,8 @@
     }
 </script>
 
+{% endblock %}
+
+{% block scripts %}
+    {% include 'custom_datatables.html' %}
 {% endblock %}

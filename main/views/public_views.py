@@ -76,9 +76,9 @@ def contact(request):
 	}
 	return render(request,'contact.html',context)
 
-def detailPost(request,pk):
-	postData = get_object_or_404(Post,id=pk)
-	recentPost = Post.objects.all().order_by('-publication_date')[:3]
+def detailPost(request,postId):
+	postData = Post.objects.get(id=postId)
+	recentPost = Post.objects.all().order_by('-publication_date')[:2]
 	recent_post_with_image = []
 	for post in recentPost:
 		image_urls,text = extract_images_from_post_content(post.content)
@@ -90,6 +90,7 @@ def detailPost(request,pk):
 			'content_text':words10,
 			'publication_date':post.publication_date,
 			})
+	print("recent_post_with_image:",recent_post_with_image)
 	context = {
 		'title':"Post Detail",
 		'posts_active':"active",

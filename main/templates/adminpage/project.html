@@ -21,7 +21,9 @@
             <a href="{% url 'admin-project-add' %}" class="btn btn-sm btn-outline-info"><i class="fa fa-plus-square"></i> Rejistu Project</a>
         </div>
         <div class="card-body">
-            <table class="table table-bordered table-sm">
+            <table id="dataTable" class="table table-bordered table-sm">
+                <thead>
+                    
                 <tr>
                     <th>Naran</th>
                     <th>Data Hahu</th>
@@ -31,6 +33,9 @@
                     <th>Portfolio</th>
                     <th>#</th>
                 </tr>
+                </thead>
+                <tbody>
+                    
                 {% for data in objects %}
                 <tr>
                     <td>{{data.naran|upper}}</td>
@@ -59,6 +64,7 @@
                     </div>
                 </div>
                 {% endfor %}
+                </tbody>
             </table>    
         </div>
     </div>
@@ -66,3 +72,7 @@
 </div>
 
 {% endblock %}
+
+{% block scripts %}
+{% include 'custom_datatables.html' %}
+{% endblock %} 

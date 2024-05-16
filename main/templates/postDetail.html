@@ -7,11 +7,10 @@
 <section id="post-detail">
     <div class="container">
       <div class="row" style="margin-top:50px ;">
-
          <div class="col-lg-8 col-md-8">
             <div class="row" style="padding-left: 20px;padding-right: 20px;">
                <div class="col-sm-6">
-                  <a href="">Author : {{postData.author}}</a>
+                  <a href="">Author : {{postData.author.first_name}} {{postData.author.last_name}}</a>
                </div>
                <div class="col-sm-6 text-right">
                   <p>{{postData.publication_date|date:"d M Y"}}</p>
@@ -23,10 +22,6 @@
 
                </p>
             </div>
-<!--             <div>
-               <a href="" class="" style="float: left;padding: 5px;border-radius: 10%;">Previous</a>
-               <a href="" style="float: right;">Next</a>
-            </div> -->
          </div>
          <div class="col-lg-4" style="margin-top: 80px;padding-left: 40px;margin-bottom: 30px; border: 0.4px solid #eae8e8;border-radius: 10px;">
             <div class="text-left" style="margin-bottom: 30px;">

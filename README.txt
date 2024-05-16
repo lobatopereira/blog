@@ -1037,3 +1037,292 @@ def posts(request):
     </div>
 </div>
 {% endfor %}
+
+
+
+========================== AULA 16 ==========================
+Implementasaun library import-export:
+    - Instalasaun library : pip install django-import-export
+    - deklara iha install apps iha settings.py : "import_export"
+    - iha kazu ida nee sei implementa import_export ba models sira admin.py nunee funcionalidade ida ne sei lao deit iha django admin panel.
+    - Ezemplu implenta ba model Portfolio
+    
+        from django.contrib import admin
+        from main.models import *
+        from import_export import resources
+        from import_export.admin import ImportExportModelAdmin
+        # Register your models here.
+
+        class PortfolioResource(resources.ModelResource):
+            class Meta:
+                model = Portfolio
+
+        class PortfolioAdmin(ImportExportModelAdmin):
+            resource_classes = [PortfolioResource]
+        admin.site.register(Portfolio,PortfolioAdmin)
+
+Push project ba github
+    - installa software git https://git-scm.com 
+    - kria konta github
+    - kria Repositorio iha github
+    - loke git bash iha ita nia project django
+    - executa Komandu git sira:
+        git init  : atu inisializa git
+        git remote add origin https://github.com/username/repositoriname.git : uza atu remote ka konekta loka direktori ho Repositorio iha github
+        git add . : atu add file sira ba prosesu push
+        git commit -m "commit name" : uza atu commit mudansa sira nebe ita add ona
+        git push -u origin "brance name (main or master)" : uza atu push file mudansa sira ba repository iha github 
+
+Deploy sistema iha render.com
+    - prepara file requirement sira ba deploy nian
+        - instala library whitenoise nebe handle static file sira : pip install whitenoise
+        - kria file requirements.txt uza komandu pip freeze > requirements.txt iha terminal : funsiona hodi alista library sira nebe suporta ba ita nia projetu iha file requirements.txt nia laran
+        - iha file requirements.txt aumenta gunicorn iha okos liu
+        - kria file runtime.txt iha ita nia project nia laran no deklara python-3.10.7 iha file refere nia laran
+        - kria file Procfile no deklara web: gunicorn blog.wsgi --log-file - iha file refere nia laran
+        - deklara whitenoise middleware iha settings.py iha parte middleware nian : 'whitenoise.middleware.WhiteNoiseMiddleware',
+        - iha parte ALLOWED_HOSTS ita deklara mos ita nia domain ka link nebe ita sei hosting iha onrender, ex: ALLOWED_HOSTS = ['teste.onrender.com','*']
+        - hafoin konfigura hotu ita sei push ba github atu atualiza ita nia kodigu iha github
+    - konfigurasaun iha render.com
+        - kria service foun liu husi butaun : "new" no submenu "web service"
+        - hili "build and deploy with Git repository" depois "next"
+        - hili ita nia repository nebe ita atu deploy no "connect"
+        - deklara web service name : exemplu "koko" tau tuir ida nebe ita deklara iha ALLOWED_HOSTS 
+        - hili "Runtime" ne Python 3
+        - prense "Build Command" ho "pip install -r requirements.txt"
+        - prense "Start Command" ho "gunicorn blog.wsgi:application" : iha ne blog ne mak ita nia main app nia naran, folder nebe consiste settings.py no wsgi.py.
+        - hafoin konfigura hotu ita kria webservice uza butaun "Create Web Service" no sei automatica ezekuta prosesu deployment.
+
+
+Implementa datatables
+    - deklara library datatables sira konsiste husi file css no js iha file html nebe eziste table.
+
+{% load static %}
+<link href="{% static 'main/datatables/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'main/datatables/js/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'main/datatables/js/dataTables.bootstrap4.min.js' %}" type="text/javascript"></script>
+
+<script>
+$(document).ready( function () {
+    var table = $('#dataTable').removeAttr('width').DataTable( {
+        "scrollY": "50vh",
+        "scrollX": false,
+        "scrollCollapse": true,
+        "paging": true,
+    });
+} );
+</script>
+
+    - kodigo sira nee bele mos tau ketak iha file ida no ita bele bolu deit file refere iha file html nebe eziste tabela.
+    - deklara id="dataTable" ba table nebe atu uza datatables
+    - no table refere tenki uza <thead> no <tbody>
+
+Implementa datatable search builder
+    - implementa kuaze hanesan ho datatable babain diferente mak iha ajustamentu ba library sira hanesan tuir mai nee
+{% load static %}
+<link href="{% static 'main/datatables/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'main/datatables/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+        <script src="{% static 'main/datatables/js/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+        <script src="{% static 'main/datatables/js/dataTables.bootstrap4.min.js' %}" type="text/javascript"></script>
+<link href="{% static 'main/datatables/css/searchBuilder.dataTables.min.css' %}" rel="stylesheet">
+<link href="{% static 'main/datatables/css/searchBuilder.bootstrap4.min.css' %}" rel="stylesheet">
+<link href="{% static 'main/datatables/css/buttons.dataTables.min.css' %}" rel="stylesheet">
+<style type="text/css">
+    .dtsb-searchBuilder{
+        background: #b9c7e6 !important;
+        padding: 5px
+    }
+    .dt-button, .dtsb-add {
+        background: white !important;
+    }
+</style>
+<script src="{% static 'main/datatables/js/dataTables.searchBuilder.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/searchBuilder.bootstrap4.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/jszip.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/pdfmake.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/vfs_fonts.js' %}"></script>
+<script src="{% static 'main/datatables/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/buttons.colVis.min.js' %}"></script>
+
+<script src="{% static 'main/datatables/datatables.js' %}"></script>
+<script>
+$(document).ready( function () {
+    var table = $('#dataTable').removeAttr('width').DataTable( {
+        "scrollY": "50vh",
+        "scrollX": false,
+        "scrollCollapse": true,
+        "paging": true,
+        searchBuilder: true ,
+        buttons:[
+            {
+                extend: 'excelHtml5', autoFilter: true, sheetName: 'Exported data'
+            },
+            {
+                extend: 'print', autoPrint: true, orientation: 'landscape', pageSize: 'LEGAL',
+                exportOptions: { columns: ':visible' },
+                messageBottom: '<br/><br/><br/>\
+                    Dili, __________, Fulan ____________ 20_______<br/><br/><br/><br/>\
+                    (______________________________________________)\
+                    ',
+                title: '<h4 class="my-5 text-center">{{title}}</h4>',
+                customize: function ( win ) {
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<center><h2>Ministerio da Administra&ccedil;&atilde;o Estatal</h2></center>',
+                            '<center><h5>Dire&ccedil;&atilde;o Nacional Logistica e Patrim&oacute;nio</h5></center>',
+                            '<hr width="75%" style="border-width: 4px;border-color:#000 ">'
+                        );
+
+                    $(win.document.body).find('table')
+                        .addClass('compact table-bordered')
+                        .css({
+                            'font-size': 'inherit',
+                            // 'border-color': '#ff0000' // Set border color
+                        });
+
+                    // $(win.document.body).find('table tr, table td') // Set border color for tr and td
+                        // .css('border-color', '#ff0000');
+
+                    
+                }
+            },
+            'colvis',
+        ],
+        dom: 'Bfrtip',
+        "deferRender": true
+    });
+    table.searchBuilder.container().prependTo(table.table().container());
+} );
+</script>
+
+Elabora dadus dashboard simples
+    -implementa count data iha views IndexAdmin:
+    totalPost = Post.objects.all().count()
+	totalPublishedPost = Post.objects.filter(status='Published').count()
+    haree detallu iha views IndexAdmin no template index.html iha adminpage nia laran
+
+
+Elabora Estatistica dadus ho tabela pivot
+    - implementa codigo hodi organiza dadus ita tabela pivot iha views IndexAdmin 
+        sumariuPostTuirKategoria = []
+        lista_categoria = Categoria.objects.all()
+        postStatus = Post.objects.distinct().values('status').all().order_by('status')
+
+        for x in lista_categoria:
+            postStatusList = []
+            for data in postStatus:
+                postStatusCount = Post.objects.filter(status=data['status'],category=x).count()
+                postStatusList.append({'status':data['status'],'totalStatus':postStatusCount})
+
+            sumariuPostTuirKategoria.append({'categoria':x,'totalStatus':postStatusList})
+    - implementa tabela pivot iha template index.html iha adminpage
+
+Elabora Estatistica ho forma Charts
+    - kria link ka url foun hodi handle dadus nebe atu fo sai iha Charts
+        path('chart-categoria-post/',chartCategoriaPost,name='chartCategoriaPost'),
+    - kria view ho naran chartCategoriaPost hodi foti dadus no organiza tuir necesidade chart nian
+
+@login_required
+def chartCategoriaPost(request):
+	labels = []
+	data = []
+	categoria = Categoria.objects.all()
+	for x in categoria:
+		totalPost = Post.objects.filter(category__id=x.id).count()
+		labels.append(x.naran)
+		data.append(totalPost)
+
+	return JsonResponse(data={
+		'labels':labels,
+		'data':data,
+		})
+    
+    - char refere sei bolu iha file index.html iha adminpage nia laran inklui codigo javascript hodi fo sai Charts
+ 
+ <canvas id="chartCategoriaPost" data-url="{% url 'chartCategoriaPost' %}"></canvas>
+
+{% block scripts %}
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'charts/Charts.min.js' %}"></script>
+<script type="text/javascript">
+  var $chartCategoriaPost  = $('#chartCategoriaPost');
+
+  $.ajax({
+      url: $chartCategoriaPost.data("url"),
+      success: function (data) {
+        var ctx = $chartCategoriaPost[0].getContext("2d");
+
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [
+                
+                {
+                    label: "Total Publikasaun",
+                    backgroundColor: [
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(220, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)'
+                    ],
+                    borderWidth: 1,
+                    data: data.data,
+                }
+            ]
+        },
+            options : {
+              legend: {
+                  display: false
+              },
+              scales: {
+                yAxes: [{
+                  ticks: {
+                      beginAtZero: true,
+                      steps: 10,
+                      stepValue: 5,
+                      precision: 0
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Total Dadus',
+                  }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: "Categoria",
+                    },
+                  }]
+              }
+            }//end of options
+    });
+    }
+  });
+</script>
+{% endblock %}
+
+

@@ -43,6 +43,71 @@ footer {
 <div class="container mt-3 p-5" style="box-shadow: 0 0 3px rgba(0, 0, 0, 0.4); border-radius: 4px;">
   <div class="text-center mb-5">
     <h4 style="text-transform: uppercase;">Personal Blog okokok</h4>
+
+    <div class="row text-light">
+      
+      <div class="col-md-4">
+        <div class="bg-primary p-5 my-2 rounded">
+          <h3 class="text-white">{{totalPost}}</h3>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="bg-warning p-5 my-2 rounded">
+          <h3 class="text-white">{{totalPublishedPost}}</h3>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-title pt-3"><h5>Total Post tuir Categoria no Status</h5></div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                  <thead>
+                      <tr>
+                          <th rowspan="2">Category</th>
+                          <th colspan="{{postStatus|length}}">Status</th>
+                      </tr>
+                      <tr>
+                        {% for i in postStatus %}
+                        <th>{{i.status}}</th>
+                        {% endfor %}
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for obj in sumariuPostTuirKategoria %}
+                      <tr>
+                          <td>{{ obj.categoria }}</td>
+                          {% for o in obj.totalStatus %}
+                          <td>
+                            <a href="{% url 'PostCategoryStatusList' obj.categoria o.status  %}">
+                              {{o.totalStatus}}
+                            </a>
+                          </td>
+                          {% endfor %}
+                          
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <canvas id="chartCategoriaPost" data-url="{% url 'chartCategoriaPost' %}"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
   </div>
 
  
@@ -50,7 +115,85 @@ footer {
 
 
 {% endblock %}
-{% block scripts %}
 
+{% block scripts %}
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'charts/Charts.min.js' %}"></script>
+<script type="text/javascript">
+  var $chartCategoriaPost  = $('#chartCategoriaPost');
+
+  $.ajax({
+      url: $chartCategoriaPost.data("url"),
+      success: function (data) {
+        var ctx = $chartCategoriaPost[0].getContext("2d");
+
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [
+                
+                {
+                    label: "Total Publikasaun",
+                    backgroundColor: [
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(220, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)',
+                        'rgba(0, 179, 230, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)',
+                        'rgba(0, 250, 255, 1)'
+                    ],
+                    borderWidth: 1,
+                    data: data.data,
+                }
+            ]
+        },
+            options : {
+              legend: {
+                  display: false
+              },
+              scales: {
+                yAxes: [{
+                  ticks: {
+                      beginAtZero: true,
+                      steps: 10,
+                      stepValue: 5,
+                      precision: 0
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Total Dadus',
+                  }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: "Categoria",
+                    },
+                  }]
+              }
+            }//end of options
+    });
+    }
+  });
+</script>
 {% endblock %}
 
